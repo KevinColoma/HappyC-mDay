@@ -386,11 +386,22 @@
             <p>¡Salud por muchos años más de amistad, aventuras y locuras! Te queremos un montón, hermano! *Clovis dice que quiere tu pack</p>
         `;
 
-        // Mostrar mensaje final después de 5 segundos
+      
+        // Simular carga del mensaje con efecto de máquina de escribir
         setTimeout(() => {
             const messageContainer = document.getElementById('mainMessage');
-            messageContainer.innerHTML = finalMessage;
-        }, 5000);
+            messageContainer.innerHTML = '';
+            
+            let i = 0;
+            const typingEffect = setInterval(() => {
+                if (i < finalMessage.length) {
+                    messageContainer.innerHTML += finalMessage.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingEffect);
+                }
+            }, 20);
+        }, 5000); // 5 segundos de "generación" del mensaje
 
         // Efecto de máquina de escribir para los mensajes adicionales
         const additionalMessages = document.querySelectorAll('.message:not(#mainMessage)');
