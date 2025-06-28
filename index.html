@@ -354,21 +354,35 @@
             }
         }
 
-        // Abrir regalo y reproducir audio
+       // Abrir regalo y reproducir audio AL MÁXIMO VOLUMEN
         document.getElementById('giftBox').addEventListener('click', function() {
             const audio = document.getElementById('birthdayAudio');
             
-            this.classList.toggle('open');
-            if (this.classList.contains('open')) {
+            // Configuración para máximo volumen
+            audio.volume = 1.0; // Volumen al 100%
+            audio.muted = false; // Asegurar que no esté silenciado
+            audio.play().then(() => {
+                // Truco adicional: crear un nodo de ganancia para amplificar
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaElementSource(audio);
+                const gainNode = audioContext.createGain();
+                
+                gainNode.gain.value = 1.5; // Aumentar ganancia (puedes ajustar este valor)
+                source.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
                 createConfetti();
                 createHearts();
-                
-                // Reproducir el audio
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log("No se pudo reproducir el audio:", e));
-            } else {
-                audio.pause();
-            }
+            }).catch(e => {
+                console.error("Error al reproducir audio:", e);
+                // Fallback: intentar reproducir sin AudioContext
+                audio.volume = 1.0;
+                audio.play();
+                createConfetti();
+                createHearts();
+            });
+            
+            this.classList.toggle('open');
         });
 
         // Mensaje final con toque humorístico
