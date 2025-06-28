@@ -378,6 +378,24 @@
         const audio = document.getElementById('birthdayAudio');
         audio.volume = 1.0;
 
+        // Función para efecto de máquina de escribir
+        function typeWriter(element, text, speed, callback) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function typing() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typing();
+        }
+
         // Secuencia de carga de elementos
         function loadElementsSequentially() {
             // Mostrar título principal
@@ -429,7 +447,7 @@
                     <p>¡Salud por muchos años más de amistad, aventuras y locuras! Te queremos un montón, hermano! *Clovis dice que quiere tu pack</p>
                 `;
                 
-                messageContainer.innerHTML = finalMessage;
+                typeWriter(messageContainer, finalMessage, 20);
                 messageContainer.classList.add('visible');
             }, 5000);
 
@@ -445,13 +463,21 @@
                 });
             }, 6000);
 
-            // Mostrar mensajes adicionales
+            // Mostrar mensajes adicionales con efecto de máquina de escribir
             setTimeout(() => {
-                document.getElementById('message1').classList.add('visible');
+                const message1 = document.getElementById('message1');
+                message1.classList.add('visible');
+                const text1 = message1.querySelector('p').textContent;
+                message1.querySelector('p').textContent = '';
+                typeWriter(message1.querySelector('p'), text1, 50);
             }, 8000);
 
             setTimeout(() => {
-                document.getElementById('message2').classList.add('visible');
+                const message2 = document.getElementById('message2');
+                message2.classList.add('visible');
+                const text2 = message2.querySelector('p').textContent;
+                message2.querySelector('p').textContent = '';
+                typeWriter(message2.querySelector('p'), text2, 50);
             }, 8500);
 
             // Mostrar regalo al final
@@ -522,41 +548,6 @@
             createConfetti();
             createHearts();
             this.classList.toggle('open');
-        });
-
-
-
-        // Simular carga del mensaje con efecto de máquina de escribir
-        setTimeout(() => {
-            const messageContainer = document.getElementById('mainMessage');
-            messageContainer.innerHTML = '';
-            
-            let i = 0;
-            const typingEffect = setInterval(() => {
-                if (i < finalMessage.length) {
-                    messageContainer.innerHTML += finalMessage.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingEffect);
-                }
-            }, 20);
-        }, 5000); // 5 segundos de "generación" del mensaje
-
-        // Efecto de máquina de escribir para los mensajes adicionales
-        const additionalMessages = document.querySelectorAll('.message:not(#mainMessage)');
-        additionalMessages.forEach(message => {
-            const originalText = message.innerHTML;
-            message.innerHTML = '';
-
-            let i = 0;
-            const typingEffect = setInterval(() => {
-                if (i < originalText.length) {
-                    message.innerHTML += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingEffect);
-                }
-            }, 50);
         });
     </script>
 </body>
