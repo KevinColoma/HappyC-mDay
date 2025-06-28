@@ -321,7 +321,11 @@
         <source src="yameteK.mp3" type="audio/mpeg">
         Tu navegador no soporta el elemento de audio.
     </audio>
-
+<script>
+    // Configurar el volumen al máximo (1.0 es el máximo)
+    const audio = document.getElementById('birthdayAudio');
+    audio.volume = 1.0; // Volumen al 100%
+</script>
     <script>
         // Crear confeti
         function createConfetti() {
