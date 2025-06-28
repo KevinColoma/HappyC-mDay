@@ -52,6 +52,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transform: perspective(500px) rotateX(0deg);
             transition: transform 0.5s;
+            text-align: left;
         }
 
         .message:hover {
@@ -262,6 +263,17 @@
                 opacity: 0;
             }
         }
+
+        .loading-dots {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .ai-generating {
+            color: #00b4d8;
+            font-style: italic;
+            border-bottom: 1px dashed #00b4d8;
+        }
     </style>
 </head>
 <body>
@@ -270,11 +282,13 @@
         
         <div class="age-display">22</div>
         
-        <div class="message">
-            <p>Hey Yorman!!!</p>
-            <p>FELIZ CUMPLEAÑOS, HERMANO!!! 22 años y contando! Estamos emocionados de celebrar contigo otro año más de vida, risas y aventuras épicas! Queremos que sepas que eres más que un amigo para nosotros, eres parte de la familia.</p>
-            <p>Gracias por ser ese hermano que siempre está ahí para nosotros, para las buenas y las malas. Este llavero de mona china es un pequeño detalle, pero es de corazón, esperamos que te traiga buena suerte y te recuerde siempre de los momentos increíbles que hemos compartido juntos en la uni.</p>
-            <p>¡Salud por muchos años más de amistad, aventuras y locuras! Te queremos un montón, hermano!</p>
+        <div class="message" id="mainMessage">
+            <p class="ai-generating">Generando mensaje con cero de IA...</p>
+            <p class="loading-dots">Cargando bromas de mal gusto...</p>
+            <p class="loading-dots">Buscando memes de programadores...</p>
+            <p class="loading-dots">DeepSeek está pensando en ti... o no</p>
+            <p class="loading-dots">Quitando el 99.9% de código basura...</p>
+            <p class="loading-dots">Listo! (o eso dice ChatGPT) ... xd</p>
         </div>
         
         <div class="signature">
@@ -350,16 +364,42 @@
                 createHearts();
                 
                 // Reproducir el audio
-                audio.currentTime = 0; // Reiniciar si ya estaba reproduciéndose
+                audio.currentTime = 0;
                 audio.play().catch(e => console.log("No se pudo reproducir el audio:", e));
             } else {
                 audio.pause();
             }
         });
 
-        // Efecto de máquina de escribir para el mensaje (opcional)
-        const messages = document.querySelectorAll('.message');
-        messages.forEach(message => {
+        // Mensaje final con toque humorístico
+        const finalMessage = `
+            <p>Hey Yorman!!!</p>
+            <p>FELIZ CUMPLEAÑOS, HERMANO!!! 22 años y contando! (aunque a veces actúas como de 12 😜)</p>
+            <p>Estamos "emocionados" de celebrar contigo otro año más de vida, bugs en el código y aventuras épicas (como esa vez que el proyecto casi explota). Queremos que sepas que eres más que un amigo para nosotros... bueno, en realidad no tanto, pero te toleramos 😏.</p>
+            <p>Gracias por ser ese hermano que siempre está ahí para nosotros (cuando no estás jugando LoL). Este llavero de mona china es un pequeño detalle (el más barato que encontramos), pero es de corazón (o eso nos obligaron a decir).</p>
+            <p>¡Salud por muchos años más de amistad, aventuras y locuras (y por favor, que no nos metas en más líos)! Te queremos un montón, hermano! (mentira, pero suena bien)</p>
+            <p>*Clovis dice que quiere tu pack... nosotros no, pero él insiste.</p>
+        `;
+
+        // Simular carga del mensaje con efecto de máquina de escribir
+        setTimeout(() => {
+            const messageContainer = document.getElementById('mainMessage');
+            messageContainer.innerHTML = '';
+            
+            let i = 0;
+            const typingEffect = setInterval(() => {
+                if (i < finalMessage.length) {
+                    messageContainer.innerHTML += finalMessage.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingEffect);
+                }
+            }, 20);
+        }, 5000); // 5 segundos de "generación" del mensaje
+
+        // Efecto de máquina de escribir para los mensajes adicionales
+        const additionalMessages = document.querySelectorAll('.message:not(#mainMessage)');
+        additionalMessages.forEach(message => {
             const originalText = message.innerHTML;
             message.innerHTML = '';
 
@@ -371,7 +411,7 @@
                 } else {
                     clearInterval(typingEffect);
                 }
-            }, 20);
+            }, 50);
         });
     </script>
 </body>
