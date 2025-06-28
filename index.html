@@ -39,6 +39,9 @@
             color: transparent;
             text-shadow: 0 0 10px rgba(229, 46, 113, 0.3);
             animation: pulse 2s infinite alternate;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s, transform 1s;
         }
 
         .message {
@@ -53,10 +56,14 @@
             transform: perspective(500px) rotateX(0deg);
             transition: transform 0.5s;
             text-align: left;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s, transform 1s;
         }
 
-        .message:hover {
-            transform: perspective(500px) rotateX(5deg);
+        .message.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .signature {
@@ -67,6 +74,12 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .signature.visible {
+            opacity: 1;
         }
 
         .signature span {
@@ -75,11 +88,19 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             transition: all 0.3s;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .signature span.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .signature span:hover {
             background: #e52e71;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.1);
         }
 
         .age-display {
@@ -89,6 +110,14 @@
             color: #ff8a00;
             text-shadow: 0 0 20px rgba(255, 138, 0, 0.5);
             position: relative;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 1s, transform 1s;
+        }
+
+        .age-display.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .age-display::after {
@@ -121,6 +150,14 @@
             transform-style: preserve-3d;
             transition: all 0.5s;
             box-shadow: 0 10px 30px rgba(229, 46, 113, 0.5);
+            opacity: 0;
+            transform: scale(0.8) rotate(-10deg);
+            transition: opacity 1s, transform 1s;
+        }
+
+        .gift-box.visible {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
         .gift-box:hover {
@@ -267,46 +304,60 @@
         .loading-dots {
             color: #aaa;
             font-style: italic;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .loading-dots.visible {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .ai-generating {
             color: #00b4d8;
             font-style: italic;
             border-bottom: 1px dashed #00b4d8;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .ai-generating.visible {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="floating">¡FELIZ CUMPLEAÑOS <span class="highlight">YORMAN</span>! <span class="emoji">🎉</span></h1>
+        <h1 id="mainTitle">¡FELIZ CUMPLEAÑOS <span class="highlight">YORMAN</span>! <span class="emoji">🎉</span></h1>
         
-        <div class="age-display">22</div>
+        <div class="age-display" id="ageDisplay">22</div>
         
         <div class="message" id="mainMessage">
-            <p class="ai-generating">Generando mensaje con cero de IA...</p>
-            <p class="loading-dots">Cargando bromas de mal gusto...</p>
-            <p class="loading-dots">Buscando memes de programadores...</p>
-            <p class="loading-dots">DeepSeek está pensando en ti... o no</p>
-            <p class="loading-dots">Quitando el 99.9% de código basura...</p>
-            <p class="loading-dots">Listo! (o eso dice ChatGPT) ... xd</p>
+            <p class="ai-generating" id="generatingText">Generando mensaje con cero de IA...</p>
+            <p class="loading-dots" id="loading1">Cargando emociones genuinas...</p>
+            <p class="loading-dots" id="loading2">Buscando palabras que no suenen a ChatGPT...</p>
+            <p class="loading-dots" id="loading3">ChatGPT viendo como prefieres a DeepSeek...</p>
+            <p class="loading-dots" id="loading4">Quitando el 99.9% de artificialidad...</p>
+            <p class="loading-dots" id="loading5">Listo! (creo) ... xd</p>
         </div>
         
-        <div class="signature">
-            <span>Axel</span>
-            <span>Nando</span>
-            <span>Tilin</span>
-            <span>Silvia</span>
-            <span>Leo</span>
-            <span>Miguel</span>
-            <span>Sheylee</span>
-            <span>kevin</span>
-            <span>DeepSeek</span>
-            <span>ChatGPT</span>
+        <div class="signature" id="signatureContainer">
+            <span id="axel">Axel</span>
+            <span id="nando">Nando</span>
+            <span id="tilin">Tilin</span>
+            <span id="silvia">Silvia</span>
+            <span id="leo">Leo</span>
+            <span id="miguel">Miguel</span>
+            <span id="sheylee">Sheylee</span>
+            <span id="kevin">kevin</span>
+            <span id="deepseek">DeepSeek</span>
+            <span id="chatgpt">ChatGPT</span>
         </div>
-        <div class="message">
+        <div class="message" id="message1">
             <p>Tod@s te deseamos...🥵</p>
         </div>
-        <div class="message">
+        <div class="message" id="message2">
             <p>un feliz día ✌️</p>
         </div>
         
@@ -321,12 +372,97 @@
         <source src="yameteK.mp3" type="audio/mpeg">
         Tu navegador no soporta el elemento de audio.
     </audio>
-<script>
-    // Configurar el volumen al máximo (1.0 es el máximo)
-    const audio = document.getElementById('birthdayAudio');
-    audio.volume = 1.0; // Volumen al 100%
-</script>
+
     <script>
+        // Configurar el volumen al máximo
+        const audio = document.getElementById('birthdayAudio');
+        audio.volume = 1.0;
+
+        // Secuencia de carga de elementos
+        function loadElementsSequentially() {
+            // Mostrar título principal
+            setTimeout(() => {
+                document.getElementById('mainTitle').style.opacity = 1;
+                document.getElementById('mainTitle').style.transform = 'translateY(0)';
+            }, 500);
+
+            // Mostrar edad
+            setTimeout(() => {
+                document.getElementById('ageDisplay').classList.add('visible');
+            }, 1000);
+
+            // Mostrar mensajes de carga uno por uno
+            setTimeout(() => {
+                document.getElementById('generatingText').classList.add('visible');
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('loading1').classList.add('visible');
+            }, 2000);
+
+            setTimeout(() => {
+                document.getElementById('loading2').classList.add('visible');
+            }, 2500);
+
+            setTimeout(() => {
+                document.getElementById('loading3').classList.add('visible');
+            }, 3000);
+
+            setTimeout(() => {
+                document.getElementById('loading4').classList.add('visible');
+            }, 3500);
+
+            setTimeout(() => {
+                document.getElementById('loading5').classList.add('visible');
+            }, 4000);
+
+            // Mostrar mensaje final después de 5 segundos
+            setTimeout(() => {
+                const messageContainer = document.getElementById('mainMessage');
+                messageContainer.innerHTML = '';
+                
+                const finalMessage = `
+                    <p>Hey Yorman!!!</p>
+                    <p>FELIZ CUMPLEAÑOS, HERMANO!!! 22 años y contando!</p>
+                    <p>Estamos emocionados de celebrar contigo otro año más de vida, risas y aventuras épicas! Queremos que sepas que eres más que un amigo para nosotros 😏 ..ok tampoco así xd. Eres parte de la familia.</p>
+                    <p>Gracias por ser ese hermano que siempre está ahí para nosotros, para las buenas y las malas. Este llavero de mona china es un pequeño detalle, pero es de corazón, esperamos que te traiga buena suerte y te recuerde siempre de los momentos increíbles que hemos compartido juntos en la uni.</p>
+                    <p>¡Salud por muchos años más de amistad, aventuras y locuras! Te queremos un montón, hermano! *Clovis dice que quiere tu pack</p>
+                `;
+                
+                messageContainer.innerHTML = finalMessage;
+                messageContainer.classList.add('visible');
+            }, 5000);
+
+            // Mostrar firmas una por una
+            setTimeout(() => {
+                document.getElementById('signatureContainer').classList.add('visible');
+                
+                const signatures = ['axel', 'nando', 'tilin', 'silvia', 'leo', 'miguel', 'sheylee', 'kevin', 'deepseek', 'chatgpt'];
+                signatures.forEach((id, index) => {
+                    setTimeout(() => {
+                        document.getElementById(id).classList.add('visible');
+                    }, index * 200);
+                });
+            }, 6000);
+
+            // Mostrar mensajes adicionales
+            setTimeout(() => {
+                document.getElementById('message1').classList.add('visible');
+            }, 8000);
+
+            setTimeout(() => {
+                document.getElementById('message2').classList.add('visible');
+            }, 8500);
+
+            // Mostrar regalo al final
+            setTimeout(() => {
+                document.getElementById('giftBox').classList.add('visible');
+            }, 9000);
+        }
+
+        // Iniciar la secuencia de carga cuando la página esté lista
+        window.addEventListener('load', loadElementsSequentially);
+
         // Crear confeti
         function createConfetti() {
             const colors = ['#ff8a00', '#e52e71', '#00b4d8', '#2ec4b6', '#f8f9fa'];
@@ -358,77 +494,34 @@
             }
         }
 
-       // Abrir regalo y reproducir audio AL MÁXIMO VOLUMEN
+        // Abrir regalo y reproducir audio AL MÁXIMO VOLUMEN
         document.getElementById('giftBox').addEventListener('click', function() {
             const audio = document.getElementById('birthdayAudio');
             
             // Configuración para máximo volumen
-            audio.volume = 1.0; // Volumen al 100%
-            audio.muted = false; // Asegurar que no esté silenciado
-            audio.play().then(() => {
-                // Truco adicional: crear un nodo de ganancia para amplificar
+            audio.volume = 1.0;
+            audio.muted = false;
+            
+            // Intentar reproducir con AudioContext para mayor volumen
+            if (window.AudioContext || window.webkitAudioContext) {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const source = audioContext.createMediaElementSource(audio);
                 const gainNode = audioContext.createGain();
                 
-                gainNode.gain.value = 1.5; // Aumentar ganancia (puedes ajustar este valor)
+                gainNode.gain.value = 1.5; // Aumentar ganancia
                 source.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
-                createConfetti();
-                createHearts();
-            }).catch(e => {
+            }
+            
+            audio.play().catch(e => {
                 console.error("Error al reproducir audio:", e);
-                // Fallback: intentar reproducir sin AudioContext
-                audio.volume = 1.0;
+                // Fallback simple
                 audio.play();
-                createConfetti();
-                createHearts();
             });
             
+            createConfetti();
+            createHearts();
             this.classList.toggle('open');
-        });
-
-        // Mensaje final con toque humorístico
-        const finalMessage =`
-            Hey Yorman!!!
-            FELIZ CUMPLEAÑOS, HERMANO!!! 22 años y contando!
-            Estamos emocionados de celebrar contigo otro año más de vida, risas y aventuras épicas! Queremos que sepas que eres más que un amigo para nosotros 😏   ..ok tampoco así xd.                                Eres parte de la familia.
-            Gracias por ser ese hermano que siempre está ahí para nosotros , para las buenas y las malas. Este llavero de mona china es un pequeño detalle, pero es de corazón, esperamos que te traiga buena suerte y te recuerde siempre de los momentos increíbles que hemos compartido juntos en la uni.
-            ¡Salud por muchos años más de amistad, aventuras y locuras! Te queremos un montón, hermano!  *Clovis dice que quiere tu pack
-        `;
-
-        // Simular carga del mensaje con efecto de máquina de escribir
-        setTimeout(() => {
-            const messageContainer = document.getElementById('mainMessage');
-            messageContainer.innerHTML = '';
-            
-            let i = 0;
-            const typingEffect = setInterval(() => {
-                if (i < finalMessage.length) {
-                    messageContainer.innerHTML += finalMessage.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingEffect);
-                }
-            }, 20);
-        }, 5000); // 5 segundos de "generación" del mensaje
-
-        // Efecto de máquina de escribir para los mensajes adicionales
-        const additionalMessages = document.querySelectorAll('.message:not(#mainMessage)');
-        additionalMessages.forEach(message => {
-            const originalText = message.innerHTML;
-            message.innerHTML = '';
-
-            let i = 0;
-            const typingEffect = setInterval(() => {
-                if (i < originalText.length) {
-                    message.innerHTML += originalText.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingEffect);
-                }
-            }, 50);
         });
     </script>
 </body>
