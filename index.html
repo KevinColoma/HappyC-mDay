@@ -523,6 +523,41 @@
             createHearts();
             this.classList.toggle('open');
         });
+
+
+
+        // Simular carga del mensaje con efecto de máquina de escribir
+        setTimeout(() => {
+            const messageContainer = document.getElementById('mainMessage');
+            messageContainer.innerHTML = '';
+            
+            let i = 0;
+            const typingEffect = setInterval(() => {
+                if (i < finalMessage.length) {
+                    messageContainer.innerHTML += finalMessage.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingEffect);
+                }
+            }, 20);
+        }, 5000); // 5 segundos de "generación" del mensaje
+
+        // Efecto de máquina de escribir para los mensajes adicionales
+        const additionalMessages = document.querySelectorAll('.message:not(#mainMessage)');
+        additionalMessages.forEach(message => {
+            const originalText = message.innerHTML;
+            message.innerHTML = '';
+
+            let i = 0;
+            const typingEffect = setInterval(() => {
+                if (i < originalText.length) {
+                    message.innerHTML += originalText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingEffect);
+                }
+            }, 50);
+        });
     </script>
 </body>
 </html>
